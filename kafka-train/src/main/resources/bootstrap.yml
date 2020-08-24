@@ -1,0 +1,25 @@
+spring:
+  application:
+    name: kafka-train
+  profiles:
+    active: dev
+  kafka:
+    consumer:
+      group-id: kafka-train
+      # 设置自动提交offset
+      enable-auto-commit: false
+      #auto-offset-reset: earliest
+      properties:
+        session.timeout.ms: 30000
+      #key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      #value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    listener:
+      ack-mode: manual_immediate
+
+---
+spring:
+  profiles: dev
+
+---
+spring:
+  profiles: test
