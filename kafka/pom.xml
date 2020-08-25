@@ -9,7 +9,7 @@
         <relativePath/> <!-- lookup parent from repository -->
     </parent>
     <groupId>com.fz.boot</groupId>
-    <artifactId>kafka-train</artifactId>
+    <artifactId>kafka</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>kafka-train</name>
     <description>Demo project for Spring Boot integrate kafka</description>
