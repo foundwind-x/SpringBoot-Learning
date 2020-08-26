@@ -1,0 +1,13 @@
+spring:
+  application:
+    name: es-train
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
+
+---
+spring:
+  profiles: test
