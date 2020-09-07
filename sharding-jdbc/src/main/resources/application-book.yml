@@ -1,0 +1,66 @@
+spring:
+  shardingsphere:
+    sharding:
+      ### 数据库默认分库策略 ###
+#      default-database-strategy:
+#        # 策略类型为 inline
+#        inline:
+#          # 分片字段
+#          sharding-column: id
+#          algorithm-expression: db$->{id % 3}
+      # 绑定的表
+      binding-tables: book
+      # 分表策略
+      tables:
+        book:
+          # 单个表的分库策略
+          database-strategy:
+            inline:
+              # 分片字段
+              sharding-column: id
+              algorithm-expression: db$->{id % 3}
+          actual-data-nodes: db$->{0..2}.book_$->{0..1}
+          table-strategy:
+            inline:
+              # 分片字段
+              sharding-column: count
+              algorithm-expression: book_$->{count % 2}
+    ###  数据源配置 ###
+    datasource:
+      # 总库
+      names: db0,db1,db2
+      # 数据源
+      db0:
+        jdbc-url: jdbc:mysql://10.201.15.46:3306/db0?useUnicode=true&characterEncoding=utf-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+        username: root
+        password: 123456
+        type: com.zaxxer.hikari.HikariDataSource #com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      db1:
+        jdbc-url: jdbc:mysql://10.201.15.46:3306/db1?useUnicode=true&characterEncoding=utf-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+        username: root
+        password: 123456
+        type: com.zaxxer.hikari.HikariDataSource #com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+      db2:
+        jdbc-url: jdbc:mysql://10.201.15.46:3306/db2?useUnicode=true&characterEncoding=utf-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC
+        username: root
+        password: 123456
+        type: com.zaxxer.hikari.HikariDataSource #com.alibaba.druid.pool.DruidDataSource
+        driver-class-name: com.mysql.cj.jdbc.Driver
+    ### 属性 ###
+    props:
+      # 打印sql
+      sql.show: true
+      check:
+        table:
+          metadata:
+            # 是否在启动时检查分表元数据一致性
+            enabled: false
+
+#mybatis plus 设置
+mybatis-plus:
+  mapper-locations: classpath*:com/fz/boot/sharding/**/xml/*Mapper.xml
+  global-config:
+    db-config:
+      field-strategy: not_null
