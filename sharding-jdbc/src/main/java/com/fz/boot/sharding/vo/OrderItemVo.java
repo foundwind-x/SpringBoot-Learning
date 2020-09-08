@@ -1,5 +1,6 @@
 package com.fz.boot.sharding.vo;
 
+import cn.hutool.json.JSONUtil;
 import lombok.Data;
 
 /**
@@ -11,4 +12,9 @@ import lombok.Data;
 public class OrderItemVo {
 
     private Double price;
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJsonStr(this);
+    }
 }

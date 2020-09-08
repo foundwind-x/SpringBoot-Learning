@@ -1,8 +1,10 @@
 package com.fz.boot.sharding.entity;
 
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -14,7 +16,7 @@ import java.io.Serializable;
  */
 @Data
 @TableName("t_order")
-public class Order implements Serializable {
+public class Order extends Model<Order> {
 
     private static final long serialVersionUID = -8785161103077691159L;
 
@@ -25,4 +27,9 @@ public class Order implements Serializable {
     private Long addressId;
 
     private String status;
+
+    @Override
+    public String toString() {
+        return JSONUtil.toJsonStr(this);
+    }
 }

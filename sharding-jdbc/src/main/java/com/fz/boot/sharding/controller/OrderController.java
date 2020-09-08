@@ -37,7 +37,6 @@ public class OrderController {
         order.setAddressId(orderVo.getAddressId());
         order.setStatus(orderVo.getStatus());
         orderService.save(order);
-        System.out.println("====="+JSONUtil.toJsonStr(order));
 
         List<OrderItemVo> orderItemVos = orderVo.getOrderItemVos();
         List<OrderItem> orderItems = new ArrayList<>();
@@ -50,26 +49,26 @@ public class OrderController {
             orderItems.add(item);
         });
 
-        orderItemService.saveBatch(orderItems);
-
+        boolean b = orderItemService.saveBatch(orderItems);
+        if(b){
+            //打印查看通过sharding主键生成器算法snowflake产生的主键是否返回
+            System.out.println("====orderItems====");
+            orderItems.forEach(System.out::println);
+        }
 
         return true;
     }
 
     @PostMapping("save")
     public Boolean saveOrder(@RequestBody OrderVo orderVo){
-        System.out.println("========"+JSONUtil.toJsonStr(orderVo));
         Order order = new Order();
         order.setOrderId(orderVo.getOrderId());
         order.setUserId(orderVo.getUserId());
         order.setAddressId(orderVo.getAddressId());
         order.setStatus(orderVo.getStatus());
-        boolean save = orderService.save(order);
-        if(save){
-            System.out.println("========"+JSONUtil.toJsonStr(order));
-        }
-
+        orderService.save(order);
 
         return true;
     }
+
 }
