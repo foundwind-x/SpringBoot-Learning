@@ -23,7 +23,7 @@ import java.util.Optional;
 @Slf4j
 public class DemoConsumer {
 
-    @KafkaListener(topics = KafkaConstant.DEMO_TOPIC)
+    @KafkaListener(topics = KafkaConstant.DEMO_TOPIC,groupId = KafkaConstant.GROUP_ID)
     public void listen(ConsumerRecord<String, String> record, Consumer consumer) {
         Optional<ConsumerRecord<String, String>> recordOptional = Optional.ofNullable(record);
         if(recordOptional.isPresent()){

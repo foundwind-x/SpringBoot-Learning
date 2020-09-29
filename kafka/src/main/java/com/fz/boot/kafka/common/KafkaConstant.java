@@ -9,4 +9,5 @@ package com.fz.boot.kafka.common;
  */
 public class KafkaConstant {
     public static final String DEMO_TOPIC = "demoTopic";
+    public static final String GROUP_ID = "kafka-train";
 }
