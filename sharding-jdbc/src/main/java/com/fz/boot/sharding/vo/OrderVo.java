@@ -3,6 +3,7 @@ package com.fz.boot.sharding.vo;
 import cn.hutool.json.JSONUtil;
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 /**
@@ -12,8 +13,9 @@ import java.util.List;
  */
 @Data
 public class OrderVo {
+    @NotNull(message = "orderId is empty")
     private Long orderId;
-
+    @NotNull(message = "userId is empty")
     private Integer userId;
 
     private Long addressId;

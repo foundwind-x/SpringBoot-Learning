@@ -1,5 +1,7 @@
 package com.fz.boot.sharding.entity;
 
+import com.baomidou.mybatisplus.annotation.IdType;
+import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.baomidou.mybatisplus.extension.activerecord.Model;
 import groovy.transform.EqualsAndHashCode;
@@ -17,6 +19,7 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @TableName("book")
 public class Book extends Model<Book> {
+    @TableId(type=IdType.INPUT)
     private int id;
     private String name;
     private int count;

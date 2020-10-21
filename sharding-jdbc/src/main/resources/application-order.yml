@@ -28,12 +28,6 @@ spring:
               #分片字段
               sharding-column: order_id
               algorithm-expression: t_order_$->{order_id % 2}
-#          #主键的生成策略（用于单分片键的标准分片场景）
-#          key-generator:
-#            #主键名称
-#            column: order_id
-#            #自增列值生成器类型，缺省表示使用默认自增列值生成器。可使用用户自定义的列值生成器或选择内置类型：SNOWFLAKE/UUID
-#            type: SNOWFLAKE
           # 单独指定该表的分库策略
           database-strategy:
             inline:

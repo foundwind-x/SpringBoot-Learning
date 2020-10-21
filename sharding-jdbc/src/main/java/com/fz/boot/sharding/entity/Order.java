@@ -20,6 +20,7 @@ public class Order extends Model<Order> {
 
     private static final long serialVersionUID = -8785161103077691159L;
 
+    @TableId(type = IdType.INPUT)
     private Long orderId;
 
     private Integer userId;
