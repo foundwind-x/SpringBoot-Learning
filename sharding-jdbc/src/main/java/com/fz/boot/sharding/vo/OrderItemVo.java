@@ -12,6 +12,7 @@ import lombok.Data;
 public class OrderItemVo {
 
     private Double price;
+    private String description;
 
     @Override
     public String toString() {

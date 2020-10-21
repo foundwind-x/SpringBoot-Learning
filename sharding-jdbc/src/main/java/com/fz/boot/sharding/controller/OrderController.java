@@ -35,7 +35,6 @@ public class OrderController {
 
     @PostMapping("saveAll")
     public Boolean save(@RequestBody @Validated OrderVo orderVo){
-        System.out.println(orderVo);
         Order order = new Order();
         order.setOrderId(orderVo.getOrderId());
         order.setUserId(orderVo.getUserId());
@@ -51,6 +50,7 @@ public class OrderController {
             item.setUserId(orderVo.getUserId());
             item.setStatus(orderVo.getStatus());
             item.setPrice(orderItemVo.getPrice());
+            item.setDescription(orderItemVo.getDescription());
             orderItems.add(item);
         });
 

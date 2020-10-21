@@ -27,6 +27,7 @@ CREATE TABLE IF NOT EXISTS t_order_item_0 (
   user_id INT NOT NULL,
   price DOUBLE(10,1) DEFAULT NULL,
   status VARCHAR(50),
+  description VARCHAR(255),
   PRIMARY KEY (order_item_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -36,5 +37,6 @@ CREATE TABLE IF NOT EXISTS t_order_item_1 (
   user_id INT NOT NULL,
   price DOUBLE(10,1) DEFAULT NULL,
   status VARCHAR(50),
+  description VARCHAR(255),
   PRIMARY KEY (order_item_id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

@@ -30,6 +30,8 @@ public class OrderItem extends Model<OrderItem>{
 
     private String status;
 
+    private String description;
+
     @Override
     public String toString() {
         return JSONUtil.toJsonStr(this);
