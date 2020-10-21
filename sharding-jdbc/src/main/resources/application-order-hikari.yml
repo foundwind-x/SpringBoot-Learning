@@ -1,0 +1,147 @@
+spring:
+  shardingsphere:
+    sharding:
+      ###数据库默认分库策略###
+      default-database-strategy:
+        #inline-行表达式分片(也属于单分片键的标准分片的一种)
+        inline:
+          #分片列名称（字段名称）
+          sharding-column: user_id
+          algorithm-expression: db$->{user_id % 3}
+        #standard-用于单分片键的标准分片场景
+#        standard:
+#          sharding-column: user_id
+#          #精确分片算法类名称，用于=和IN。该类需实现PreciseShardingAlgorithm接口并提供无参数的构造器
+#          precise-algorithm-class-name: XXClassName
+#          #范围分片算法类名称，用于BETWEEN，可选。该类需实现RangeShardingAlgorithm接口并提供无参数的构造器
+#          range-algorithm-class-name: XXClassName
+      #绑定的表
+      binding-tables: t_order,t_order_item
+      #配置单个表的策略
+      tables:
+        #逻辑表名
+        t_order:
+          actual-data-nodes: db$->{0..2}.t_order_$->{0..1}
+          #该表的分表策略
+          table-strategy:
+            inline:
+              #分片字段
+              sharding-column: order_id
+              algorithm-expression: t_order_$->{order_id % 2}
+          # 单独指定该表的分库策略
+          database-strategy:
+            inline:
+              # 分片字段
+              sharding-column: user_id
+              algorithm-expression: db$->{user_id % 3}
+        #逻辑表名
+        t_order_item:
+          actual-data-nodes: db$->{0..2}.t_order_item_$->{0..1}
+          #该表的分表策略
+          table-strategy:
+            inline:
+              #分片字段
+              sharding-column: order_id
+              algorithm-expression: t_order_item_$->{order_id % 2}
+          #主键的生成策略（用于单分片键的标准分片场景）
+          key-generator:
+            #主键名称
+            column: order_item_id
+            #自增列值生成器类型，缺省表示使用默认自增列值生成器。可使用用户自定义的列值生成器或选择内置类型：SNOWFLAKE/UUID
+            type: SNOWFLAKE
+      # 默认主键生成策略
+#      default-key-generator:
+#        type: SNOWFLAKE
+#        props:
+#          worker:
+#            id: 123
+    ###  数据源配置 ###
+    datasource:
+      # 总库
+      names: db0,db1,db2
+      # 数据源
+      db0:
+        jdbc-url: jdbc:mysql://10.201.15.46:3306/db0?autoReconnect=true&useUnicode=true&createDatabaseIfNotExist=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&serverTimezone=UTC
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        # hikari连接池
+        type: com.zaxxer.hikari.HikariDataSource
+      ### hikari连接池配置 ###
+        minimum-idle: 5
+        # 空闲连接存活最大时间，默认600000（10分钟）
+        idle-timeout: 180000
+        # 连接池最大连接数，默认是10
+        maximum-pool-size: 10
+        # 此属性控制从池返回的连接的默认自动提交行为,默认值：true
+        auto-commit: true
+        # 连接池名称
+        pool-name: MyHikariCP-1
+        # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+        max-lifetime: 1800000
+        # 数据库连接超时时间,默认30秒，即30000
+        connection-timeout: 30000
+        connection-test-query: SELECT 1 FROM DUAL
+      ### hikari连接池配置 end ###
+      db1:
+        jdbc-url: jdbc:mysql://10.201.15.46:3306/db1?autoReconnect=true&useUnicode=true&createDatabaseIfNotExist=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&serverTimezone=UTC
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        # hikari连接池
+        type: com.zaxxer.hikari.HikariDataSource
+      ### hikari连接池配置 ###
+        minimum-idle: 5
+        # 空闲连接存活最大时间，默认600000（10分钟）
+        idle-timeout: 180000
+        # 连接池最大连接数，默认是10
+        maximum-pool-size: 10
+        # 此属性控制从池返回的连接的默认自动提交行为,默认值：true
+        auto-commit: true
+        # 连接池名称
+        pool-name: MyHikariCP-2
+        # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+        max-lifetime: 1800000
+        # 数据库连接超时时间,默认30秒，即30000
+        connection-timeout: 30000
+        connection-test-query: SELECT 1 FROM DUAL
+      ### hikari连接池配置 end ###
+      db2:
+        jdbc-url: jdbc:mysql://10.201.15.46:3306/db2?autoReconnect=true&useUnicode=true&createDatabaseIfNotExist=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&serverTimezone=UTC
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        # hikari连接池
+        type: com.zaxxer.hikari.HikariDataSource
+      ### hikari连接池配置 ###
+        minimum-idle: 5
+        # 空闲连接存活最大时间，默认600000（10分钟）
+        idle-timeout: 180000
+        # 连接池最大连接数，默认是10
+        maximum-pool-size: 10
+        # 此属性控制从池返回的连接的默认自动提交行为,默认值：true
+        auto-commit: true
+        # 连接池名称
+        pool-name: MyHikariCP-3
+        # 此属性控制池中连接的最长生命周期，值0表示无限生命周期，默认1800000即30分钟
+        max-lifetime: 1800000
+        # 数据库连接超时时间,默认30秒，即30000
+        connection-timeout: 30000
+        connection-test-query: SELECT 1 FROM DUAL
+      ### hikari连接池配置 end ###
+    ### 属性 ###
+    props:
+      # 打印sql
+      sql.show: true
+      check:
+        table:
+          metadata:
+            # 是否在启动时检查分表元数据一致性
+            enabled: false
+
+#mybatis plus 设置
+mybatis-plus:
+  mapper-locations: classpath*:com/fz/boot/sharding/**/xml/*Mapper.xml
+  global-config:
+    db-config:
+      field-strategy: not_null

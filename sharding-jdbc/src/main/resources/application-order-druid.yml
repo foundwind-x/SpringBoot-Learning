@@ -1,0 +1,159 @@
+spring:
+  datasource:
+    druid:
+      filters: stat,wall,config,log4j
+      #最大连接池数量
+      maxActive: 10
+      #最小连接池数量
+      minIdle: 6
+      #初始化时建立物理连接的个数。初始化发生在显示调用init方法，或者第一次getConnection时
+      initialSize: 6
+      #获取连接时最大等待时间，单位毫秒。配置了maxWait之后，缺省启用公平锁，并发效率会有所下降，如果需要可以通过配置useUnfairLock属性为true使用非公平锁。
+      maxWait: 60000
+      # 配置间隔多久才进行一次检测，检测需要关闭的空闲连接，单位是毫秒
+      timeBetweenEvictionRunsMillis: 300000
+      # 配置一个连接在池中最小生存的时间，单位是毫秒
+      minEvictableIdleTimeMillis: 900000
+      #用来检测连接是否有效的sql
+      validationQuery: select 'x'
+      #	申请连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能。
+      testOnBorrow: false
+      #归还连接时执行validationQuery检测连接是否有效，做了这个配置会降低性能
+      testOnReturn: false
+      #建议配置为true，不影响性能，并且保证安全性。申请连接的时候检测，如果空闲时间大于timeBetweenEvictionRunsMillis，执行validationQuery检测连接是否有效。
+      #testWhileIdle: true
+      #KeepAlive之后的效果
+      #初始化连接池时会填充到minIdle数量。
+      #连接池中的minIdle数量以内的连接，更长的时间超过minEvictableIdleTimeMillis，可以执行keepAlive操作。
+      #当网络轴向等原因产生的由ExceptionSorter检测出来的死连接被清除后，自动补充连接到minIdle数量。
+      keepAlive: true
+      #是否缓存preparedStatement，也就是PSCache。PSCache对支持游标的数据库性能提升巨大，比如说oracle。在mysql下建议关闭。
+      poolPreparedStatements: false
+      #要启用PSCache，必须配置大于0，当大于0时，poolPreparedStatements自动触发修改为true。在Druid中，不会存在Oracle下PSCache占用内存过多的问题，可以把这个数值配置大一些，比如说100
+      maxOpenPreparedStatements: -1
+      maxPoolPreparedStatementPerConnectionSize: 10
+      useGlobalDataSourceStat: true
+      #timeBetweenLogStatsMillis: 1000
+      # 通过connectProperties属性来打开mergeSql功能；慢SQL记录
+      connectProperties: druid.stat.mergeSql=true;druid.stat.slowSqlMillis=500
+      web-stat-filter:
+        enabled: true
+        url-pattern: "/*"
+        exclusions: "*.js,*.gif,*.jpg,*.bmp,*.png,*.css,*.ico,/druid/*"
+        session-stat-enable: true
+        session-stat-max-count: 1000
+      # 配置DruidStatViewServlet
+      stat-view-servlet:
+        enabled: true
+        url-pattern: "/druid/*"
+        # IP白名单(没有配置或者为空，则允许所有访问)
+        # allow: 127.0.0.1,192.168.46.120
+        # IP黑名单 (存在共同时，deny优先于allow)
+        # deny: 192.168.46.121
+        #  禁用HTML页面上的“Reset All”功能
+        reset-enable: false
+        # 登录名
+        login-username: admin
+        # 登录密码
+        login-password: 123456
+  shardingsphere:
+    sharding:
+      ###数据库默认分库策略###
+      default-database-strategy:
+        #inline-行表达式分片(也属于单分片键的标准分片的一种)
+        inline:
+          #分片列名称（字段名称）
+          sharding-column: user_id
+          algorithm-expression: db$->{user_id % 3}
+        #standard-用于单分片键的标准分片场景
+#        standard:
+#          sharding-column: user_id
+#          #精确分片算法类名称，用于=和IN。该类需实现PreciseShardingAlgorithm接口并提供无参数的构造器
+#          precise-algorithm-class-name: XXClassName
+#          #范围分片算法类名称，用于BETWEEN，可选。该类需实现RangeShardingAlgorithm接口并提供无参数的构造器
+#          range-algorithm-class-name: XXClassName
+      #绑定的表
+      binding-tables: t_order,t_order_item
+      #配置单个表的策略
+      tables:
+        #逻辑表名
+        t_order:
+          actual-data-nodes: db$->{0..2}.t_order_$->{0..1}
+          #该表的分表策略
+          table-strategy:
+            inline:
+              #分片字段
+              sharding-column: order_id
+              algorithm-expression: t_order_$->{order_id % 2}
+          # 单独指定该表的分库策略
+          database-strategy:
+            inline:
+              # 分片字段
+              sharding-column: user_id
+              algorithm-expression: db$->{user_id % 3}
+        #逻辑表名
+        t_order_item:
+          actual-data-nodes: db$->{0..2}.t_order_item_$->{0..1}
+          #该表的分表策略
+          table-strategy:
+            inline:
+              #分片字段
+              sharding-column: order_id
+              algorithm-expression: t_order_item_$->{order_id % 2}
+          #主键的生成策略（用于单分片键的标准分片场景）
+          key-generator:
+            #主键名称
+            column: order_item_id
+            #自增列值生成器类型，缺省表示使用默认自增列值生成器。可使用用户自定义的列值生成器或选择内置类型：SNOWFLAKE/UUID
+            type: SNOWFLAKE
+      # 默认主键生成策略
+#      default-key-generator:
+#        type: SNOWFLAKE
+#        props:
+#          worker:
+#            id: 123
+    ###  数据源配置 ###
+    datasource:
+      # 总库
+      names: db0,db1,db2
+      # 数据源
+      db0:
+        url: jdbc:mysql://10.201.15.46:3306/db0?autoReconnect=true&useUnicode=true&createDatabaseIfNotExist=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&serverTimezone=UTC
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        ### druid连接池配置 ###
+        type: com.alibaba.druid.pool.DruidDataSource
+        ### druid连接池配置 ###
+        #自定义的配置项，因为type为DruidDataSource，需要特别配置filters，否则shardingsphere注入的DruidDataSource不含filters，不能实现相关的监控功能
+#        filters: com.alibaba.druid.filter.stat.StatFilter,com.alibaba.druid.wall.WallFilter,com.alibaba.druid.filter.logging.Log4j2Filter
+      db1:
+        url: jdbc:mysql://10.201.15.46:3306/db1?autoReconnect=true&useUnicode=true&createDatabaseIfNotExist=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&serverTimezone=UTC
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        # druid连接池
+        type: com.alibaba.druid.pool.DruidDataSource
+      db2:
+        url: jdbc:mysql://10.201.15.46:3306/db2?autoReconnect=true&useUnicode=true&createDatabaseIfNotExist=true&characterEncoding=utf8&useSSL=false&allowMultiQueries=true&serverTimezone=UTC
+        driver-class-name: com.mysql.cj.jdbc.Driver
+        username: root
+        password: 123456
+        # druid连接池
+        type: com.alibaba.druid.pool.DruidDataSource
+    ### 属性 ###
+    props:
+      # 打印sql
+      sql.show: true
+      check:
+        table:
+          metadata:
+            # 是否在启动时检查分表元数据一致性
+            enabled: false
+
+#mybatis plus 设置
+mybatis-plus:
+  mapper-locations: classpath*:com/fz/boot/sharding/**/xml/*Mapper.xml
+  global-config:
+    db-config:
+      field-strategy: not_null
