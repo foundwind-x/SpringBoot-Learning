@@ -1,0 +1,17 @@
+// http://localhost:8080/order/saveAll
+{
+    "orderId":"2",
+    "userId":1,
+    "addressId":222,
+    "status":"测试002",
+    "orderItemVos":[{
+        "price":31.5,
+        "description":"订单2类目1"
+    },{
+        "price":33.6,
+        "description":"订单2类目2"
+    }]
+}
+
+
+// http://localhost:8080/order/list?userId=1
