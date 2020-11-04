@@ -33,7 +33,7 @@ public class DemoConsumer {
         }else {
             log.info(LogConstant.EMPTY_MESSAGE);
         }
-
+        //手动提交offset
         consumer.commitAsync();
     }
 }
